@@ -150,7 +150,7 @@ Once you have launched both the apps, you should be able to access streamlit web
 You could also test predictions with FastAPI directly using 
 
 ```
-curl -X POST "http://localhost:8000/predict" \
+curl -X POST "http://localhost:55001/predict" \
 -H "Content-Type: application/json" \
 -d '{
   "sqft": 1500,
@@ -158,13 +158,75 @@ curl -X POST "http://localhost:8000/predict" \
   "bathrooms": 2,
   "location": "suburban",
   "year_built": 2000,
-  "condition": fair
+  "condition": "fair"
 }'
 
 ```
 
 Be sure to replace `http://localhost:8000/predict` with actual endpoint based on where its running. 
 
+## Build the Docker image
+
+1. Create my Docker image
+```bash
+docker image build -t fastapi .
+```
+
+```bash
+docker image ls
+docker image history fastapi
+```
+
+2. Run my Docker image in assigned port (55001 not 8000): 
+```bash
+docker run -idtP fastapi
+```
+
+Run my Docker for testing (to exit container 'exit'):
+```bash
+docker run --rm -it fastapi bash
+uvicorn main:app --host 0.0.0.0 --port 8000
+```
+*bash overrides uvicorn command
+
+```bash
+docker ps -l
+docker ps
+docker logs ['CONTAINER ID']
+```
+
+3. Remove my Docker container
+```bash
+docker rm -f ['CONTAINER ID']
+```
+
+## Create and Launch Docker compose
+
+General:
+```bash
+docker compose -f docker-compose.yaml
+```
+
+1. Used (careful with indentation in the 'docker-compose.yaml' file):
+```bash
+docker compose build
+```
+
+2. Launch my Docker compose
+```bash
+docker compose up -d
+```
+
+Optionals:
+```bash
+docker compose logs -f
+```
+
+```bash
+docker compose stop
+docker compose start
+docker compose down # removes the containers
+```
 
 ## 🧠 Learn More About MLOps
 
