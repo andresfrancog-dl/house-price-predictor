@@ -45,7 +45,7 @@ jobs:
 
       - name: Process data
         run: |
-          python src/data/run_processing.py \            
+          python src/data/run_processing.py \
             --input data/raw/house_data.csv \
             --output data/processed/cleaned_house_data.csv
 
@@ -95,7 +95,7 @@ jobs:
         run: |
           docker pull ghcr.io/mlflow/mlflow:latest
           docker run -d -p 5000:5000 --name mlflow-server ghcr.io/mlflow/mlflow:latest \
-            mlflow server --host 0.0.0.0 \            
+            mlflow server --host 0.0.0.0 \
             --backend-store-uri sqlite:///mlflow.db
 
       - name: Wait for MLflow to start
@@ -107,10 +107,10 @@ jobs:
       - name: Train model
         run: |
           mkdir -p models
-          python src/models/train_model.py \           
-            --config configs/model_config.yaml \             
-            --data data/processed/featured_house_data.csv \            
-            --models-dir models \            
+          python src/models/train_model.py \
+            --config configs/model_config.yaml \
+            --data data/processed/featured_house_data.csv \
+            --models-dir models \
             --mlflow-tracking-uri http://localhost:5000
 
       - name: Upload trained model
@@ -171,6 +171,6 @@ jobs:
       - name: Push Docker image to DockerHub
         run: |
           COMMIT_HASH=$(echo ${{ github.sha }} | cut -c1-7)
-          docker tag docker.io/${{ vars.DOCKERHUB_USERNAME }}/house-price-model:$COMMIT_HASH docker.io/${{ vars.DOCKERHUB_USERNAME }}/house-price-model:latest             docker.io/${{ vars.DOCKERHUB_USERNAME }}/house-price-model:latest
+          docker tag docker.io/${{ vars.DOCKERHUB_USERNAME }}/house-price-model:$COMMIT_HASH docker.io/${{ vars.DOCKERHUB_USERNAME }}/house-price-model:latest
           docker push docker.io/${{ vars.DOCKERHUB_USERNAME }}/house-price-model:$COMMIT_HASH
           docker push docker.io/${{ vars.DOCKERHUB_USERNAME }}/house-price-model:latest
